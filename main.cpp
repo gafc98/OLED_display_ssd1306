@@ -23,6 +23,7 @@ int main()
     ssd1306.write_col(0b10101010);
     ssd1306.write_col(0b01010101);
     ssd1306.write_col(0b10101010);
+    ssd1306.clear_display();
 
 	return 0;
 }

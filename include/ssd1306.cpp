@@ -21,6 +21,8 @@ public:
 
     void set_cursor(__u8 x, __u8 y)
     {
+        // first set device address to ensure correct communication
+        _i2c_bus->set_device_address(_device_address);
         write8(COMMAND_REG, 0x00 + (x & 0x0F));
         write8(COMMAND_REG, 0x10 + ((x >> 4) & 0x0F));
         write8(COMMAND_REG, 0xB0 + y);
@@ -28,6 +30,8 @@ public:
 
     void clear_display()
     {
+        // first set device address to ensure correct communication
+        _i2c_bus->set_device_address(_device_address);
         for (__u8 page = 0; page <= 7; page++)
         {
             set_cursor(0, page);
@@ -98,6 +102,7 @@ private:
 
     void set_config()
     {
+        // first set device address to ensure correct communication
         _i2c_bus->set_device_address(_device_address);
         // turn on display
         std::cout << "turning on display\n";
