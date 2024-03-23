@@ -24,6 +24,11 @@ int main()
     ssd1306.write_col(0b01010101);
     ssd1306.write_col(0b10101010);
     ssd1306.clear_display();
+    ssd1306.put_char('G');
+    ssd1306.set_cursor(0, 1);
+    ssd1306.put_string("Hello world!");
+
+    ssd1306.turn_off_display();
 
 	return 0;
 }

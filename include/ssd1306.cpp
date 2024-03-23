@@ -1,4 +1,6 @@
 #include "i2c_bus.cpp"
+#include "fonts.hpp"
+#include <string>
 
 #ifndef _SSD1306_
 #define _SSD1306_
@@ -6,6 +8,7 @@
 #define COMMAND_REG 0x80
 #define DATA_REG 0x40
 #define ON_CMD 0xAF
+#define OFF_CMD 0xAE
 #define NORMAL_DISPLAY_CMD 0xA6
 #define PAGE_ADDRESSING_MODE 0x02
 
@@ -46,6 +49,26 @@ public:
         write8(DATA_REG, byte);
     }
 
+    void turn_off_display()
+    {
+        write8(COMMAND_REG, OFF_CMD);
+    }
+
+    void put_string(std::string str)
+    {
+        for (char & ch : str)
+            put_char(ch);
+    }
+
+    void put_char(char ch)
+    {
+        if (ch < 32 || ch > 127) 
+            ch = ' ';
+        ch -= 32; // Font array starts at 0, ASCII starts at 32, 2 is offset
+        for (__u8 i = 0; i < font8x8[0]; i++) // font8x8[0] is font width
+            write8(DATA_REG, font8x8[ch * 8 + 2 + i]);
+    }
+
 private:
     void write8(__u8 reg, __u8 byte)
     {
@@ -53,15 +76,6 @@ private:
         buffer[0] = reg;
         buffer[1] = byte;
         _i2c_bus->write_to_device(buffer, 2);
-    }
-    
-    void write16(__u8 reg, __u8 byte1, __u8 byte2)
-    {
-        __u8 buffer[3];
-        buffer[0] = reg;
-        buffer[1] = byte1;
-        buffer[2] = byte2;
-        _i2c_bus->write_to_device(buffer, 3);
     }
 
     __u8 read8(__u8 reg)
